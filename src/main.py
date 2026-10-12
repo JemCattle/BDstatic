@@ -5,9 +5,10 @@ import time
 import shutil
 import sys
 
-basepath = sys.argv[0]
-if basepath is None:
-    basepath = "/"
+if len(sys.argv) > 1:
+    basepath = sys.argv[1]
+else:
+    basepath = "./"
 
 def main():
     log = []
@@ -23,7 +24,7 @@ def generate_page(from_path, template_path, dest_path):
     html = markdown_to_html_node(page).to_html()
     title = extract_title(page)
     new_page = template.replace("{{ Title }}", title).replace("{{ Content }}", html)
-    new_page = new_page.replace("href=\"/" f"href=\"{basepath}").replace("src=\"/" , f"src=\"{basepath}")
+    new_page = new_page.replace("href=\"/", f"href=\"{basepath}").replace("src=\"/", f"src=\"{basepath}")
     dest_dir = os.path.dirname(dest_path)
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
