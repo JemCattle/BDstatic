@@ -3,11 +3,16 @@ from markdown_to_html import markdown_to_html_node, extract_title
 import os
 import time
 import shutil
+import sys
+
+basepath = sys.argv[0]
+if basepath is None:
+    basepath = "/"
 
 def main():
     log = []
-    copy_static(log, "./static/" , "./public/")
-    generate_pages_recursive("./content/", "./template.html", "./public/")
+    copy_static(log, "./static/" , "./docs/")
+    generate_pages_recursive(basepath+"content/", basepath+"template.html", basepath+"docs/")
 
 def generate_page(from_path, template_path, dest_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
@@ -18,6 +23,7 @@ def generate_page(from_path, template_path, dest_path):
     html = markdown_to_html_node(page).to_html()
     title = extract_title(page)
     new_page = template.replace("{{ Title }}", title).replace("{{ Content }}", html)
+    new_page = new_page.replace("href=\"/" f"href=\"{basepath}").replace("src=\"/" , f"src=\"{basepath}")
     dest_dir = os.path.dirname(dest_path)
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
