@@ -1,4 +1,5 @@
 from textnode import TextType, TextNode
+from markdown_to_html import markdown_to_html_node, extract_title
 import os
 import time
 import shutil
@@ -6,8 +7,30 @@ import shutil
 def main():
     log = []
     copy_static(log, "./static/" , "./public/")
-    # print(log)
-    
+    generate_pages_recursive("./content/", "./template.html", "./public/")
+
+def generate_page(from_path, template_path, dest_path):
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+    with open(from_path) as p:
+        page = p.read()
+    with open(template_path) as t:
+        template = t.read()
+    html = markdown_to_html_node(page).to_html()
+    title = extract_title(page)
+    new_page = template.replace("{{ Title }}", title).replace("{{ Content }}", html)
+    dest_dir = os.path.dirname(dest_path)
+    if not os.path.exists(dest_dir):
+        os.makedirs(dest_dir)
+    with open(dest_path, 'w+') as d:
+        d.write(new_page)
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    content = os.listdir(dir_path_content)
+    for item in content:
+        if os.path.isdir(os.path.join(dir_path_content, item)):
+            generate_pages_recursive(os.path.join(dir_path_content, item),template_path, os.path.join(dest_dir_path, item))
+        else:
+            generate_page(os.path.join(dir_path_content, item), template_path, os.path.join(dest_dir_path, item.replace(".md", ".html")))
 
 def log_format(path: str, action: str, target: str | None) -> dict:
     return {

@@ -13,18 +13,14 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
             inline_end = 0
             escape_index = []
             for index in range(0, len(node.text)):
-                #print(str(index) + " " + node.text[index] + " inline="+str(inline)+" inline end="+str(inline_end))
                 if node.text[index] == delimiter[0]:
                     if index > 0 and node.text[index - 1] == "\\":
                         node.text = node.text[:index-1] + node.text[index:]
-                        #index += 1
-                        #print(node.text)
                         continue
                     if delimiter_len > 1:
                         if node.text[index:index+delimiter_len] == delimiter:
                             index += delimiter_len - 1
                         else:
-                            #print("delimiter miss")
                             index += 1
                             continue
                     if not inline:
@@ -64,7 +60,7 @@ def helper_link_split_points(image_link: bool, split_points: list, links: list[t
         prefix = 1
     for alt_text, link in links:
         split_points.append(text.find(alt_text) - prefix)
-        split_points.append(text.find(link) + len(link) + 1)
+        split_points.append(text.find(link,split_points[-1]) + len(link) + 1)
     split_points.append(None)
     return split_points
 

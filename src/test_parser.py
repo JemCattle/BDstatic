@@ -183,6 +183,20 @@ class TestSplitNodes(unittest.TestCase):
             ],
             nodes,
             )
+            
+    def test_links_to_textnodes(self):
+        test_text = "This site was generated with a custom-built [static site generator](https://www.boot.dev/courses/build-static-site-generator-python) from the course on [Boot.dev](https://www.boot.dev)."
+        nodes = text_to_textnodes(test_text)
+        self.assertListEqual(
+            [
+                TextNode("This site was generated with a custom-built ", TextType.TEXT),
+                TextNode("static site generator", TextType.LINK, "https://www.boot.dev/courses/build-static-site-generator-python"),
+                TextNode(" from the course on ", TextType.TEXT),
+                TextNode("Boot.dev", TextType.LINK, "https://www.boot.dev"),
+                TextNode(".", TextType.TEXT),
+            ],
+            nodes,
+            )
 # test blocks
     def test_markdown_to_blocks(self):
         md = """

@@ -96,3 +96,51 @@ the **same** even with inline stuff
             html,
                 "<div><blockquote>implying this is a quote ishygddt that feel when no image to html parser feelsbadman.jpg</blockquote></div>",
         )
+
+    def test_extract_title(self):
+        md = """
+# heading
+This is **bolded** paragraph
+text in a p
+tag here
+
+This is another paragraph with _italic_ text and `code` here
+
+"""
+        self.assertEqual(
+            extract_title(md),
+                "heading",
+        )
+
+
+    def test_extract_title_2(self):
+        md = """
+# heading
+This is **bolded** paragraph
+text in a p
+tag here
+
+# another heading
+
+This is another paragraph with _italic_ text and `code` here
+
+"""
+        self.assertEqual(
+            extract_title(md),
+                "heading",
+        )
+
+
+    def test_extract_title_none(self):
+        md = """
+## heading
+This is **bolded** paragraph
+text in a p
+tag here
+
+This is another paragraph with _italic_ text and `code` here
+
+"""
+        self.assertRaises(Exception,
+            extract_title, md
+        )

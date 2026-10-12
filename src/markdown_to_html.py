@@ -63,3 +63,11 @@ def blocktype_to_tag(block_type: BlockType) -> str:
             return "ul"
         case BlockType.ORDERED_LIST:
             return "ol"
+
+def extract_title(markdown):
+    lines = markdown.split("\n")
+    found = False
+    for line in lines:
+        if line[:2] == "# ":
+            return line[2:]
+    raise Exception("no header found")
